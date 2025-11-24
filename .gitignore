@@ -34,3 +34,6 @@
 *.app
 
 */build/*
+/cmake-build-debug/
+/.venv/
+/include/manufactured_solution.hpp

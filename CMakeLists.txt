@@ -1,7 +1,18 @@
-cmake_minimum_required(VERSION 3.12.0)
-project(project_title LANGUAGES CXX C)
+cmake_minimum_required(VERSION 3.13)
+project(matrix_test LANGUAGES CXX)
 
-include(../common/cmake-common.cmake)
+find_package(deal.II REQUIRED HINTS ENV{DEAL_II_DIR})
 
-add_executable(lab-01 src/lab-01.cpp src/Poisson1D.cpp)
-deal_ii_setup_target(lab-01)
+deal_ii_initialize_cached_variables()
+
+include_directories(include)
+
+# Main convergence test program
+add_executable(matrix_test src/main.cpp)
+deal_ii_setup_target(matrix_test)
+
+# Matrix-free ADR solver
+add_executable(matrix_free_solver src/main_matrix_free.cpp)
+deal_ii_setup_target(matrix_free_solver)
+
+
