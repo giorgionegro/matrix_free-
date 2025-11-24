@@ -14,37 +14,30 @@ def compute_forcing_term(u_exact, mu, beta, gamma, dim=2):
         x, y, z = symbols('x y z', real=True)
         coords = [x, y, z]
 
-    print(f"Computing forcing term for {dim}D problem...")
-    print(f"Exact solution: u = {u_exact}")
-    print(f"Diffusion coefficient: μ = {mu}")
-    print(f"Advection field: β = {beta}")
-    print(f"Reaction coefficient: γ = {gamma}")
-    print("\n" + "="*70)
+
 
     grad_u = [diff(u_exact, coord) for coord in coords]
-    print(f"\n∇u = {grad_u}")
 
     mu_grad_u = [mu * grad_u[i] for i in range(dim)]
     div_mu_grad_u = sum([diff(mu_grad_u[i], coords[i]) for i in range(dim)])
     diffusion_term = -div_mu_grad_u
 
-    print(f"\nDiffusion term: -∇·(μ∇u) = {simplify(diffusion_term)}")
 
     beta_u = [beta[i] * u_exact for i in range(dim)]
     div_beta_u = sum([diff(beta_u[i], coords[i]) for i in range(dim)])
     advection_term = div_beta_u
 
-    print(f"Advection term: ∇·(βu) = {simplify(advection_term)}")
+
 
     reaction_term = gamma * u_exact
-    print(f"Reaction term: γu = {simplify(reaction_term)}")
+
 
     f = diffusion_term + advection_term + reaction_term
     f_simplified = simplify(f)
 
-    print("\n" + "="*70)
-    print(f"FORCING TERM: f = {f_simplified}")
-    print("="*70)
+
+
+
 
     return f_simplified, grad_u, coords
 
@@ -54,9 +47,9 @@ def generate_cpp_code(u_exact, f, grad_u, mu, beta, gamma, coords):
     from sympy.utilities.codegen import codegen
     from sympy.printing.cxx import cxxcode
 
-    print("\n\n" + "="*70)
-    print("C++ CODE GENERATION")
-    print("="*70)
+
+
+
 
     dim = len(coords)
 
@@ -206,11 +199,11 @@ public:
   }}
 }};"""
 
-    print(cpp_exact)
-    print("\n" + cpp_forcing)
-    print("\n" + cpp_diffusion)
-    print("\n" + cpp_advection)
-    print("\n" + cpp_reaction)
+
+
+
+
+
 
     with open('../include/manufactured_solution.hpp', 'w') as f:
         f.write("#pragma once\n\n")
@@ -225,20 +218,14 @@ public:
         f.write(cpp_advection + "\n\n")
         f.write(cpp_reaction + "\n\n")
 
-    print("\n\nCode saved to 'manufactured_solution.hpp'")
 
 def main():
     """Main function with example."""
 
-    print("="*70)
-    print("WEAK FORMULATION AND FORCING TERM GENERATOR")
-    print("For Advection-Diffusion-Reaction Problems")
-    print("="*70)
 
     x, y = symbols('x y', real=True)
 
  
-    print("-" * 70)
     u_exact_3 = exp(-((x-0.5)**2 + (y-0.5)**2))
     mu_3 = 1 + x**2 + y**2
     beta_3 = (y, -x)
@@ -247,11 +234,9 @@ def main():
     f_3, grad_u_3, coords_3 = compute_forcing_term(u_exact_3, mu_3, beta_3, gamma_3, dim=2)
 
 
-    print("\n\nGenerating C++ cod")
     generate_cpp_code(u_exact_3, f_3, grad_u_3, mu_3, beta_3, gamma_3, coords_3)
 
-    print("\n\n" + "="*70)
-    print("="*70)
+
 
 
 if __name__ == "__main__":
