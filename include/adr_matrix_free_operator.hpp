@@ -154,7 +154,7 @@ void ADRMatrixFreeOperator<dim, fe_degree, number>::local_compute_diagonal(
   for (unsigned int cell = cell_range.first; cell < cell_range.second; ++cell)
   {
     phi.reinit(cell);
-  //TODO: check this two loops it may be possiblew to remove them
+  //TODO: check this two loops it may be possiblew to remove them, not sure it takes long tho
     for (unsigned int i = 0; i < phi.dofs_per_cell; ++i)
     {
       for (unsigned int j = 0; j < phi.dofs_per_cell; ++j)
