@@ -2,7 +2,7 @@
 
 
 import sympy as sp
-from sympy import symbols, Function, diff, simplify, sin, cos, exp, pi, latex
+from sympy import symbols, Function, diff, simplify, sin, cos, exp, pi
 
 def compute_forcing_term(u_exact, mu, beta, gamma, dim=2):
     """Compute the forcing term f from the exact solution."""
@@ -47,49 +47,6 @@ def compute_forcing_term(u_exact, mu, beta, gamma, dim=2):
     print("="*70)
 
     return f_simplified, grad_u, coords
-
-def generate_weak_formulation(dim=2):
-    """Generate the weak formulation in LaTeX."""
-
-    print("\n\n" + "="*70)
-    print("WEAK FORMULATION")
-    print("="*70)
-
-    weak_form = r"""
-Find u ∈ V such that for all v ∈ V₀:
-
-a(u,v) = F(v)
-
-where:
-
-a(u,v) = ∫_Ω μ∇u·∇v dx + ∫_Ω β·∇u v dx + ∫_Ω γuv dx
-
-F(v) = ∫_Ω fv dx + ∫_{Γ_N} hv ds
-
-with:
-- V = {v ∈ H¹(Ω) : v = g on Γ_D}
-- V₀ = {v ∈ H¹(Ω) : v = 0 on Γ_D}
-"""
-
-
-    latex_weak = r"""
-\text{Find } u \in V \text{ such that for all } v \in V_0:
-
-a(u,v) = F(v)
-
-\text{where:}
-
-a(u,v) = \int_{\Omega} \mu \nabla u \cdot \nabla v \, dx 
-       + \int_{\Omega} \beta \cdot \nabla u \, v \, dx 
-       + \int_{\Omega} \gamma u v \, dx
-
-F(v) = \int_{\Omega} f v \, dx + \int_{\Gamma_N} h v \, ds
-"""
-
-    print("\nLaTeX version:")
-    print(latex_weak)
-
-    return weak_form
 
 def generate_cpp_code(u_exact, f, grad_u, mu, beta, gamma, coords):
     """Generate C++ code snippets for deal.II implementation."""
@@ -289,7 +246,6 @@ def main():
 
     f_3, grad_u_3, coords_3 = compute_forcing_term(u_exact_3, mu_3, beta_3, gamma_3, dim=2)
 
-    generate_weak_formulation(dim=2)
 
     print("\n\nGenerating C++ cod")
     generate_cpp_code(u_exact_3, f_3, grad_u_3, mu_3, beta_3, gamma_3, coords_3)
