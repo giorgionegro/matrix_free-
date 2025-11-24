@@ -200,27 +200,34 @@ void ADRMatrixSolver<dim>::assemble_system()
 template <int dim>
 void ADRMatrixSolver<dim>::solve()
 {
-  // Use more relaxed tolerance for large systems to avoid stagnation
-  // Relative tolerance: 1e-8 is sufficient for convergence tests
-  const double tolerance = 1e-8 * system_rhs.l2_norm();
+  // Use stricter tolerance for better accuracy
+  const double tolerance = 1e-10 * system_rhs.l2_norm();
   const unsigned int max_iterations = std::min(100000u, 10 * dof_handler.n_dofs());
 
   SolverControl solver_control(max_iterations, tolerance);
 
   // Use GMRES with larger Krylov space for better convergence
   SolverGMRES<Vector<double>>::AdditionalData gmres_data;
-  gmres_data.max_n_tmp_vectors = 200;  // Increased from 100
-  gmres_data.right_preconditioning = false;  // Left preconditioning is often better
+  gmres_data.max_n_tmp_vectors = 300;
+  gmres_data.right_preconditioning = true;
   SolverGMRES<Vector<double>> solver(solver_control, gmres_data);
 
-  // SSOR preconditioner with optimal relaxation for ADR problems
-  PreconditionSSOR<SparseMatrix<double>> preconditioner;
-  preconditioner.initialize(system_matrix, 1.5);  // Slightly higher relaxation
+  // Use Chebyshev preconditioner - consistent with matrix-free solver
+  using PreconditionerType = PreconditionChebyshev<SparseMatrix<double>, Vector<double>>;
+  typename PreconditionerType::AdditionalData chebyshev_data;
+  chebyshev_data.degree = 5;  // Polynomial degree for smoothing
+  chebyshev_data.smoothing_range = 20.0;  // Eigenvalue range estimate
+  chebyshev_data.eig_cg_n_iterations = 10;  // CG iterations for eigenvalue estimation
+
+  PreconditionerType preconditioner;
+  preconditioner.initialize(system_matrix, chebyshev_data);
 
   try
   {
     solver.solve(system_matrix, solution, system_rhs, preconditioner);
     constraints.distribute(solution);
+    std::cout << "  GMRES converged in " << solver_control.last_step()
+              << " iterations.\n";
   }
   catch (const std::exception &exc)
   {
