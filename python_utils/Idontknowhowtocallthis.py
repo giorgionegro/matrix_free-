@@ -280,25 +280,7 @@ def main():
 
     x, y = symbols('x y', real=True)
 
-    print("\n\n Polynomial solution")
-    print("-" * 70)
-    u_exact = x * (1 - x) * y * (1 - y)
-    mu = 1.0
-    beta = (1.0, 0.5)
-    gamma = 1.0
-
-    f, grad_u, coords = compute_forcing_term(u_exact, mu, beta, gamma, dim=2)
-
-    print("\n\n\nTrigonometric solution")
-    print("-" * 70)
-    u_exact_2 = sin(pi * x) * sin(pi * y)
-    mu_2 = 1.0
-    beta_2 = (0.0, 0.0)
-    gamma_2 = 0.0
-
-    f_2, grad_u_2, coords_2 = compute_forcing_term(u_exact_2, mu_2, beta_2, gamma_2, dim=2)
-
-    print("\n\n\nEXAMPLE 3: Variable coefficients")
+ 
     print("-" * 70)
     u_exact_3 = exp(-((x-0.5)**2 + (y-0.5)**2))
     mu_3 = 1 + x**2 + y**2
@@ -309,7 +291,7 @@ def main():
 
     generate_weak_formulation(dim=2)
 
-    print("\n\nGenerating C++ code for Example 3...")
+    print("\n\nGenerating C++ cod")
     generate_cpp_code(u_exact_3, f_3, grad_u_3, mu_3, beta_3, gamma_3, coords_3)
 
     print("\n\n" + "="*70)
