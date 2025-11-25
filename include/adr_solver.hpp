@@ -178,7 +178,7 @@ void ADRMatrixSolver<dim>::assemble_system()
           // Diffusion term: mu * grad_phi_i . grad_phi_j
           cell_matrix(i, j) += (mu * (grad_phi_i * grad_phi_j)) * JxW;
 
-          // Advection term (conservative form): beta . grad_phi_j * phi_i
+          // Advection term: beta . grad_phi_j * phi_i
           cell_matrix(i, j) += ((beta * grad_phi_j) * phi_i) * JxW;
 
           // Reaction term: gamma * phi_j * phi_i
@@ -212,7 +212,7 @@ void ADRMatrixSolver<dim>::solve()
   gmres_data.right_preconditioning = true;
   SolverGMRES<Vector<double>> solver(solver_control, gmres_data);
 
-  // Use Chebyshev preconditioner - consistent with matrix-free solver
+  // Use Chebyshev preconditioner
   using PreconditionerType = PreconditionChebyshev<SparseMatrix<double>, Vector<double>>;
   typename PreconditionerType::AdditionalData chebyshev_data;
   chebyshev_data.degree = 5;  // Polynomial degree for smoothing
