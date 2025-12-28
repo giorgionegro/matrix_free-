@@ -1,29 +1,24 @@
 cmake_minimum_required(VERSION 3.13)
-project(matrix_test LANGUAGES CXX)
+project(matrix_free_benchmark LANGUAGES CXX)
 
 find_package(deal.II REQUIRED HINTS ENV{DEAL_II_DIR})
-
 deal_ii_initialize_cached_variables()
 
-# Enable vectorization flags for performance
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
 
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2 -mfma -flto")
 
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffast-math")
-
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopt-info-vec-optimized")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -march=native -mavx2 -mfma")
 endif()
 
 include_directories(include)
 
-# Main convergence test program
-add_executable(matrix_test src/main.cpp)
-deal_ii_setup_target(matrix_test)
+add_executable(benchmark_comprehensive_mpi src/benchmark_comprehensive_mpi.cpp)
+deal_ii_setup_target(benchmark_comprehensive_mpi)
 
-# Matrix-free ADR solver
-add_executable(matrix_free_solver src/main_matrix_free.cpp)
-deal_ii_setup_target(matrix_free_solver)
+add_executable(benchmark_matrix_free_mpi src/benchmark_comprehensive_mpi.cpp)
+target_compile_definitions(benchmark_matrix_free_mpi PRIVATE FORCE_ONLY_MF)
+deal_ii_setup_target(benchmark_matrix_free_mpi)
 
-
+add_executable(benchmark_matrix_based_mpi src/benchmark_comprehensive_mpi.cpp)
+target_compile_definitions(benchmark_matrix_based_mpi PRIVATE FORCE_ONLY_MAT)
+deal_ii_setup_target(benchmark_matrix_based_mpi)
