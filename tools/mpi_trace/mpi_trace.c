@@ -24,7 +24,6 @@ typedef struct
   uint64_t p2p_send_bytes;
   uint64_t p2p_recv_bytes;
 
-  // Per-function counters for newly added wrappers
   uint64_t calls_allgatherv;
   uint64_t calls_alltoallv;
   uint64_t calls_cancel;
